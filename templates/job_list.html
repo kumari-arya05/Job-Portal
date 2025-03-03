@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="d-flex flex-column justify-content-center align-items-center min-vh-100">
+        <h1 class="mb-4">Job Portal</h1>
+        {% if current_user.is_authenticated %}
+            <h2 class="mb-4">Job Listings</h2>
+            {% if jobs %}
+                <div class="row justify-content-center w-100">
+                    {% for job in jobs %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ job.title }}</h5>
+                                    <p class="card-text">{{ job.description }}</p>
+                                    <p><strong>Salary:</strong> {{ job.salary or 'Not specified' }}</p>
+                                    <p><strong>Location:</strong> {{ job.location }}</p>
+                                    {% if current_user.role == 'job_seeker' %}
+                                        <form method="POST" action="{{ url_for('job_apply', job_id=job.id) }}">
+                                            <button type="submit" class="btn btn-success">Apply</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="lead">No jobs available at the moment.</p>
+            {% endif %}
+        {% else %}
+            <div class="mb-4">
+                <a href="{{ url_for('login') }}" class="btn btn-primary mx-2">Login</a>
+                <a href="{{ url_for('register') }}" class="btn btn-secondary mx-2">Register</a>
+            </div>
+            <h2 class="mb-4">Job Listings</h2>
+            <p class="lead">No jobs available at the moment. Please log in or register to see more.</p>
+        {% endif %}
+    </div>
+{% endblock %}
