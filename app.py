@@ -5,22 +5,22 @@ from models import db, User, Job, Application
 from forms import LoginForm, RegisterForm, JobForm
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'  # Replace with a secure random string
+app.config['SECRET_KEY'] = 'your-secret-key-here'  
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jobs.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize extensions
+
 db.init_app(app)
 Bootstrap5(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# User loader for Flask-Login
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Create database tables
+
 with app.app_context():
     db.create_all()
 
@@ -34,7 +34,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user and user.password == form.password.data:  # Plain text for simplicity; use hashing in production
+        if user and user.password == form.password.data:  
             login_user(user)
             return redirect(url_for('job_list'))
         flash('Invalid username or password')
